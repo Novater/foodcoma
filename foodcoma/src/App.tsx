@@ -1,57 +1,80 @@
 import React from 'react';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { SnackbarProvider } from 'notistack';
+import {
+  createStyles,
+  createTheme,
+  jssPreset,
+  makeStyles,
+  StylesProvider,
+  ThemeProvider,
+
+} from '@material-ui/core';
+import Routes from 'src/Routes';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
-import './App.css';
+import './assets/css/App.css';
+
+const history = createBrowserHistory();
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
+const useStyles = makeStyles(() => createStyles({
+  '@global': {
+    '*': {
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: 0,
+    },
+    html: {
+      '-webkit-font-smoothing': 'antialiased',
+      '-moz-osx-font-smoothing': 'grayscale',
+      height: '100%',
+      width: '100%'
+    },
+    body: {
+      height: '100%',
+      width: '100%'
+    },
+    '#root': {
+      height: '100%',
+      width: '100%'
+    }
+  }
+}));
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2B6777',
+      dark: '#52AB98'
+    },
+    secondary: {
+      light: '#FFFFFF',
+      main: '#C8D8E4',
+      dark: '#F2F2F2'
+    },
+    warning: {
+      main: '#0D0D0D'
+    }
+  }
+});
 
 function App() {
+  useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <StylesProvider jss={jss}>
+        <SnackbarProvider maxSnack={1}>
+          <Router history={history}>
+            <Routes />
+          </Router>
+        </SnackbarProvider>
+      </StylesProvider>
+    </ThemeProvider>    
   );
 }
 
